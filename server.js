@@ -23,8 +23,8 @@ const bookmarkRoutes = require('./routes/bookmarks');
 const app = express();
 const corsOptions = {
   origin: [
-    'http://localhost:3000', // For your local development
-    'https://zcoder-frontend-theta.vercel.app/' // A placeholder for your Vercel URL
+    'http://localhost:3000',
+    'https://zcoder-frontend-theta.vercel.app' // <-- REMOVED TRAILING SLASH
   ]
 };
 app.use(cors(corsOptions));
@@ -51,10 +51,12 @@ app.use('/api/bookmarks', bookmarkRoutes);
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
+    // --- THIS IS THE SECOND FIX ---
     origin: [
       'http://localhost:3000',
-      'https://zcoder-frontend-theta.vercel.app/' // The same placeholder
+      'https://zcoder-frontend-theta.vercel.app' // <-- REMOVED TRAILING SLASH
     ],
+    // --- END OF FIX ---
     methods: ["GET", "POST"]
   }
 });
