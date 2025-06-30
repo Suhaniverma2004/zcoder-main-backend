@@ -11,7 +11,6 @@ require('dotenv').config();
 // Model Imports
 const ChatRoom = require('./models/ChatRoom');
 const Message = require('./models/Message');
-const User = require('./models/User');
 
 // --- THIS IS THE CRITICAL FIX: Route Imports ---
 const apiRoutes = require('./routes/api');
