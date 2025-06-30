@@ -21,7 +21,13 @@ const bookmarkRoutes = require('./routes/bookmarks');
 
 // --- SECTION 2: APP CONFIGURATION & MIDDLEWARE ---
 const app = express();
-app.use(cors());
+const corsOptions = {
+  origin: [
+    'http://localhost:3000', // For your local development
+    'https://your-live-frontend-url.vercel.app' // A placeholder for your Vercel URL
+  ]
+};
+app.use(cors(corsOptions));
 app.use(express.json());
 
 // --- SECTION 3: DATABASE CONNECTION ---
@@ -45,9 +51,12 @@ app.use('/api/bookmarks', bookmarkRoutes);
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: 'http://localhost:3000',
-    methods: ['GET', 'POST'],
-  },
+    origin: [
+      'http://localhost:3000',
+      'https://your-live-frontend-url.vercel.app' // The same placeholder
+    ],
+    methods: ["GET", "POST"]
+  }
 });
 
 io.on('connection', (socket) => {
