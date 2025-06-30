@@ -24,7 +24,7 @@ const app = express();
 const corsOptions = {
   origin: [
     'http://localhost:3000', // For your local development
-    'https://your-live-frontend-url.vercel.app' // A placeholder for your Vercel URL
+    'https://zcoder-frontend-lby6v9ih1-zcoders.vercel.app' // A placeholder for your Vercel URL
   ]
 };
 app.use(cors(corsOptions));
@@ -53,7 +53,7 @@ const io = new Server(server, {
   cors: {
     origin: [
       'http://localhost:3000',
-      'https://your-live-frontend-url.vercel.app' // The same placeholder
+      'https://zcoder-frontend-lby6v9ih1-zcoders.vercel.app' // The same placeholder
     ],
     methods: ["GET", "POST"]
   }
