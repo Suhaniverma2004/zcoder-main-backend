@@ -1,30 +1,29 @@
-// zcoder-main-backend/server.js
-
 // --- SECTION 1: IMPORTS ---
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const http = require('http');
-const { Server } = require("socket.io");
+const { Server } = require('socket.io');
 require('dotenv').config();
 
 // Model Imports
 const ChatRoom = require('./models/ChatRoom');
 const Message = require('./models/Message');
 
-// --- THIS IS THE CRITICAL FIX: Route Imports ---
+// Route Imports
 const apiRoutes = require('./routes/api');
-const authRoutes = require('./routes/auth'); // <-- 1. This line was missing.
+const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/users');
 const bookmarkRoutes = require('./routes/bookmarks');
 
-// --- SECTION 2: APP CONFIGURATION & MIDDLEWARE ---
+// --- SECTION 2: APP CONFIGURATION ---
 const app = express();
 const corsOptions = {
   origin: [
     'http://localhost:3000',
-    'https://zcoder-frontend-theta.vercel.app' // <-- REMOVED TRAILING SLASH
-  ]
+    'https://zcoder-frontend-theta.vercel.app'
+  ],
+  credentials: true
 };
 app.use(cors(corsOptions));
 app.use(express.json());
@@ -33,49 +32,53 @@ app.use(express.json());
 const connectDB = async () => {
   try {
     await mongoose.connect(process.env.MONGO_URI);
-    console.log('Successfully connected to MongoDB Atlas!');
+    console.log('✅ Connected to MongoDB Atlas');
   } catch (err) {
-    console.error('Error connecting to MongoDB Atlas:', err);
+    console.error('❌ MongoDB connection failed:', err);
     process.exit(1);
   }
 };
 connectDB();
 
-// --- SECTION 4: API ROUTE SETUP ---
+// --- SECTION 4: API ROUTES ---
 app.use('/api', apiRoutes);
-app.use('/api/auth', authRoutes); // <-- 2. This line was missing.
+app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/bookmarks', bookmarkRoutes);
-// --- SECTION 5: SOCKET.IO INTEGRATION & CHAT LOGIC ---
+
+// Test route to verify backend is live
+app.get('/', (req, res) => {
+  res.send('ZCoder Backend is Live 🚀');
+});
+
+// --- SECTION 5: SOCKET.IO SETUP ---
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    // --- THIS IS THE SECOND FIX ---
     origin: [
       'http://localhost:3000',
-      'https://zcoder-frontend-theta.vercel.app' // <-- REMOVED TRAILING SLASH
+      'https://zcoder-frontend-theta.vercel.app'
     ],
-    // --- END OF FIX ---
-    methods: ["GET", "POST"]
+    methods: ['GET', 'POST'],
+    credentials: true
   }
 });
 
 io.on('connection', (socket) => {
-  console.log('A user connected:', socket.id);
+  console.log('🔌 User connected:', socket.id);
 
   socket.on('joinRoom', async ({ problemId }) => {
     try {
       socket.join(problemId);
-      console.log(`User ${socket.id} joined room: ${problemId}`);
-      let chatRoom = await ChatRoom.findOne({ problemId: problemId });
+      let chatRoom = await ChatRoom.findOne({ problemId });
       if (!chatRoom) {
-        chatRoom = new ChatRoom({ problemId: problemId });
+        chatRoom = new ChatRoom({ problemId });
         await chatRoom.save();
       }
       const messages = await Message.find({ chatRoom: chatRoom._id }).sort({ createdAt: 'asc' });
       socket.emit('previousMessages', messages);
     } catch (error) {
-      console.error('Error in joinRoom event:', error);
+      console.error('❌ Error in joinRoom:', error);
     }
   });
 
@@ -85,23 +88,25 @@ io.on('connection', (socket) => {
       if (chatRoom) {
         const message = new Message({ text, user, chatRoom: chatRoom._id });
         await message.save();
-        const messageToSend = {
-          _id: message._id, text: message.text, user: message.user, timestamp: message.createdAt
-        };
-        io.to(room).emit('receiveMessage', messageToSend);
+        io.to(room).emit('receiveMessage', {
+          _id: message._id,
+          text: message.text,
+          user: message.user,
+          timestamp: message.createdAt
+        });
       }
     } catch (error) {
-      console.error('Error in sendMessage event:', error);
+      console.error('❌ Error in sendMessage:', error);
     }
   });
 
   socket.on('disconnect', () => {
-    console.log('User disconnected:', socket.id);
+    console.log('⚡ User disconnected:', socket.id);
   });
 });
 
-// --- SECTION 6: START THE SERVER ---
+// --- SECTION 6: START SERVER ---
 const PORT = process.env.PORT || 5001;
 server.listen(PORT, () => {
-  console.log(`Main API & Chat server is running on port ${PORT}`);
+  console.log(`🚀 ZCoder API is running on port ${PORT}`);
 });
