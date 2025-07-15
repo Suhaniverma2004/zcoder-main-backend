@@ -58,6 +58,25 @@ router.post('/login', async (req, res) => {
     if (!isMatch) {
       return res.status(400).json({ message: 'Invalid credentials.' });
     }
+
+    const login = async (email, password) => {
+  try {
+    const response = await mainApi.post('/auth/login', { email, password });
+    
+    // Ensure backend returns these fields
+    const { token, user } = response.data;
+    
+    localStorage.setItem('token', token);
+    setUser(user);
+    return { success: true };
+  } catch (error) {
+    console.error('Login error:', error);
+    return { 
+      success: false, 
+      error: error.response?.data?.message || 'Login failed' 
+    };
+  }
+};
     
     const userForClient = {
         _id: user._id,
