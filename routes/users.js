@@ -6,7 +6,7 @@ const User = require('../models/User');
  * @route   GET /api/users/:id
  * @desc    Get a user's profile data
  */
-router.get('/api/users/:id', async (req, res) => {
+router.get('/:id', async (req, res) => {
   try {
     const user = await User.findById(req.params.id).select('-password');
     if (!user) {
@@ -23,7 +23,7 @@ router.get('/api/users/:id', async (req, res) => {
  * @route   PUT /api/users/:id/profile
  * @desc    Update a user's profile information
  */
-router.put('/api/users/:id/profile', async (req, res) => {
+router.put('/:id/profile', async (req, res) => {
   try {
     const { name, title, github, linkedin } = req.body;
     
