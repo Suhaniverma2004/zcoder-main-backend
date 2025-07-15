@@ -58,13 +58,11 @@ router.get('/problems/:problemId', async (req, res) => {
  */
 router.get('/leaderboard', async (req, res) => {
   try {
-    const topUsers = await User.find()
-      .sort({ totalScore: -1 })
-      .limit(100)
-      .select('-password');
-    res.json(topUsers);
-  } catch (err) {
-    res.status(500).json({ message: 'Error fetching leaderboard data: ' + err.message });
+    const users = await User.find().sort({ totalScore: -1 }).limit(10);
+    res.json(users);
+  } catch (error) {
+    console.error("Leaderboard fetch error:", error);
+    res.status(500).json({ error: 'Failed to load leaderboard.' });
   }
 });
 

@@ -40,6 +40,10 @@ const connectDB = async () => {
 };
 connectDB();
 
+const leaderboardRoutes = require('./routes/leaderboard');
+app.use('/api', leaderboardRoutes);
+
+
 // --- SECTION 4: API ROUTES ---
 app.use('/api', apiRoutes);
 app.use('/api/auth', authRoutes);
