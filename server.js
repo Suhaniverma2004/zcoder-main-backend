@@ -109,6 +109,17 @@ io.on('connection', (socket) => {
   });
 });
 
+app.use(cors({
+  origin: 'https://zcoder-frontend-theta.vercel.app',
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  credentials: true // Enable if using cookies/auth headers
+}));
+
+// Your routes
+app.post('/api/auth/login', (req, res) => {
+  // Handle login
+});
+
 // --- SECTION 6: START SERVER ---
 const PORT = process.env.PORT || 5001;
 server.listen(PORT, () => {
