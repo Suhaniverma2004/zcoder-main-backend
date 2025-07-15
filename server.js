@@ -13,7 +13,7 @@ const Message = require('./models/Message');
 // Route Imports
 const apiRoutes = require('./routes/api');
 const authRoutes = require('./routes/auth');
-const userRoutes = require('./routes/users');
+const userRoutes = require('./routes/users'); 
 const bookmarkRoutes = require('./routes/bookmarks');
 
 // --- SECTION 2: APP CONFIGURATION ---
