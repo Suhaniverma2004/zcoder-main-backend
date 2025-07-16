@@ -19,6 +19,8 @@ const leaderboardRoutes = require('./routes/leaderboard');
 
 // --- SECTION 2: APP CONFIGURATION ---
 const app = express();
+const userCodeRoutes = require('./routes/userCodeRoutes');
+app.use('/user-code', userCodeRoutes);
 
 const corsOptions = {
   origin: [
