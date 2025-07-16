@@ -25,6 +25,8 @@ const corsOptions = {
     'http://localhost:3000',
     'https://zcoder-frontend-theta.vercel.app'
   ],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true
 };
 app.use(cors(corsOptions));
