@@ -25,7 +25,8 @@ app.use('/user-code', userCodeRoutes);
 const corsOptions = {
   origin: [
     'http://localhost:3000',
-    'https://zcoder-frontend-theta.vercel.app'
+    'https://zcoder-frontend-theta.vercel.app',
+     'https://zcoder-frontend-7pup9g1sq-zcoders.vercel.app'
   ],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
