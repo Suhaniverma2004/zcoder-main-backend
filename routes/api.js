@@ -35,17 +35,18 @@ router.get('/problems', async (req, res) => {
  * @route   GET /api/problems/:problemId
  * @desc    Get a single problem by its unique problemId string for the chatroom.
  */
-router.get('/problems/:problemId', async (req, res) => {
-  try {
-    const problem = await Problem.findOne({ problemId: req.params.problemId });
-    if (!problem) {
-      return res.status(404).json({ message: 'Problem not found' });
-    }
-    res.json(problem);
-  } catch (err) {
-    res.status(500).json({ message: 'Error fetching problem details: ' + err.message });
+router.get('/problems/:id', (req, res) => {
+  const { id } = req.params;
+
+  const problem = dsaProblems.find(p => p.problemId === id);
+
+  if (!problem) {
+    return res.status(404).json({ error: 'Problem not found' });
   }
+
+  return res.json(problem);
 });
+
 
 /**
  * @route   PUT /api/users/:id/profile
